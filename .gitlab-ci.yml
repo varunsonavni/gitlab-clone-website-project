@@ -1,31 +1,6 @@
 # This file is a template, and might need editing before it works on your project.
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-On-Demand-Scan.gitlab-ci.yml
+# This template moved to Jobs/SAST.gitlab-ci.yml in GitLab 14.0
+# Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/292977
 
-stages:
-  - build
-  - test
-  - deploy
-  - dast
-
-variables:
-  DAST_VERSION: 3
-  # Setting this variable will affect all Security templates
-  # (SAST, Dependency Scanning, ...)
-  TEMPLATE_REGISTRY_HOST: 'registry.gitlab.com'
-  SECURE_ANALYZERS_PREFIX: "$TEMPLATE_REGISTRY_HOST/security-products"
-
-dast:
-  stage: dast
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
-  variables:
-    GIT_STRATEGY: none
-  allow_failure: true
-  script:
-    - /analyze
-  artifacts:
-    reports:
-      dast: gl-dast-report.json
+include:
+  template: Jobs/SAST.gitlab-ci.yml
