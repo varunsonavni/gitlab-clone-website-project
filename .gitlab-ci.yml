@@ -16,7 +16,7 @@ sonarqube-check:
       - .sonar/cache
   script: 
     - export PATH="$PATH:/home/gitlab-runner/sonar-scanner-4.2.0.1873-linux/bin"
-    - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.qualitygate.wait=true -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+    - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
     - export url=$(cat ../target/.sonar/report-task.txt | grep ceTaskUrl | cut -c11- ) #URL where report gets stored
     - sleep 15s #Wait time for the report
     - curl -k -u "$SONAR_LOGIN_TOKEN":"" $url -o analysis.txt
@@ -25,7 +25,7 @@ sonarqube-check:
     - |
       if [ "$status" == "SUCCESS" ];then 
         echo -e "SONAR ANALYSIS SUCCESSFUL...ANALYSING RESULTS";
-        curl -k -u "$SONAR_LOGIN_TOKEN":"" https://yourSonarURI/api/qualitygates/project_status?analysisId=$analysisId -o result.txt; 
+        curl -k -u "$SONAR_LOGIN_TOKEN":"" http://18.232.146.98:9000/api/qualitygates/project_status?analysisId=$analysisId -o result.txt; 
         export result=$(cat result.txt | jq -r '.projectStatus.status');
 
         if [ "$result" == "ERROR" ];then
