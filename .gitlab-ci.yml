@@ -13,11 +13,13 @@ sonarqube-check:
   cache:
     key: "${CI_JOB_NAME}"
     paths:
-      - .sonar/cache
+      - .sonar/
+      - .scannerwork/
   script: 
     - export PATH="$PATH:/home/gitlab-runner/sonar-scanner-4.2.0.1873-linux/bin"
     - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
     - sleep 10
+    - sh new.sh
     - |
       PROJECTKEY="."
       QGSTATUS=`curl -s -u  $SONAR_TOKEN: http://18.232.146.98:9000/api/qualitygates/project_status?projectKey=$PROJECTKEY | jq '.projectStatus.status' | tr -d '"'`
