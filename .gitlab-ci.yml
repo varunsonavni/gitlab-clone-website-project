@@ -10,37 +10,21 @@ sonarqube-check:
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
+
   script: 
     - export PATH="$PATH:/home/gitlab-runner/sonar-scanner-4.2.0.1873-linux/bin"
     - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
-    - export url=$(cat ../target/.sonar/report-task.txt | grep ceTaskUrl | cut -c11- ) #URL where report gets stored
-    - sleep 15s #Wait time for the report
-    - curl -k -u "$SONAR_LOGIN_TOKEN":"" $url -o analysis.txt
-    - export status=$(cat analysis.txt | jq -r '.task.status') #Status as SUCCESS, CANCELED or FAILED
-    - export analysisId=$(cat analysis.txt | jq -r '.task.analysisId') #Get the analysis Id
     - |
-      if [ "$status" == "SUCCESS" ];then 
-        echo -e "SONAR ANALYSIS SUCCESSFUL...ANALYSING RESULTS";
-        curl -k -u "$SONAR_LOGIN_TOKEN":"" http://18.232.146.98:9000/api/qualitygates/project_status?analysisId=$analysisId -o result.txt; 
-        export result=$(cat result.txt | jq -r '.projectStatus.status');
-
-        if [ "$result" == "ERROR" ];then
-          echo -e "91mSONAR RESULTS FAILED";
-          echo "$(cat result.txt | jq -r '.projectStatus.conditions')"; 
-          exit 1 #breaks the build for violations
-        else
-          echo -e "SONAR RESULTS SUCCESSFUL";
-          echo "$(cat result.txt | jq -r '.projectStatus.conditions')";
-          exit 0 
-        fi
-      else 
-        echo -e "\e[91mSONAR ANALYSIS FAILED\e[0m";
-        exit 1 
-      fi
+      PROJECTKEY="."
+      QGSTATUS=`curl -s -u  $SONAR_TOKEN: http://18.232.146.98:9000/api/qualitygates/project_status?projectKey=$PROJECTKEY | jq '.projectStatus.status' | tr -d '"'`
+      if [ "$QGSTATUS" = "OK" ]
+      then
+      exit 0
+      elif [ "$QGSTATUS" = "ERROR" ]
+      then
+      exit 1
+      fi   
+      
   # allow_failure: true
   only:
     - main # or the name of your main branch
