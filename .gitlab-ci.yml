@@ -26,5 +26,6 @@ build_production:
   script:
   - ls
   - pwd
+  - echo "dd"
   only: ['main']
  
