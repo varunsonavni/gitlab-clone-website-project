@@ -25,6 +25,7 @@ sonarqube-check:
     # - exit 1
     # - echo "after exit IF"
 
+
   allow_failure: false
   only:
     - main
