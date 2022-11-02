@@ -18,6 +18,7 @@ sonarqube-check:
     - export PATH="$PATH:/home/gitlab-runner/sonar-scanner-4.2.0.1873-linux/bin"
     - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
     
+    
       
   # allow_failure: true
   only:
