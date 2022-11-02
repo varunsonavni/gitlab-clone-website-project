@@ -20,7 +20,7 @@ sonarqube-check:
     - |
       export QGSTATUS=`curl -s -u  $SONAR_TOKEN: http://18.232.146.98:9000/api/qualitygates/project_status?projectKey=new-group127_static-website-007_AYQy5EeRxITt09_C-Nlc | jq '.projectStatus.status' | tr -d '"'`
     - printenv | grep QG
-    - if [ "$QGSTATUS" = "ERROR" ]; then aws ls; else echo "OK"; fi
+    - if [ "$QGSTATUS" = "ERROR" ]; then raise error "Test cases failed !!!"; else echo "OK"; fi
     - echo "after IF"
 
   allow_failure: false
