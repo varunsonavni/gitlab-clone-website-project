@@ -13,16 +13,14 @@ sonarqube-check:
   cache:
     key: "${CI_JOB_NAME}"
     paths:
-      - .sonar/
+      - .sonar/cache
   script: 
     - export PATH="$PATH:/home/gitlab-runner/sonar-scanner-4.2.0.1873-linux/bin"
-    - sonar-scanner -Dsonar.projectKey=. -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
-    
-    
-      
-  # allow_failure: true
+    - sonar-scanner -X -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=admin -Dsonar.password=admin123
   only:
-    - main # or the name of your main branch
+    - main
+
+
 
 build_production:
   stage: build 
